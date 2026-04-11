@@ -1,0 +1,5 @@
+{
+  "name": "idle-timing",
+  "description": "Inject hidden timing context into Claude Code prompts.",
+  "version": "0.1.0"
+}
