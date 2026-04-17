@@ -17,27 +17,35 @@ test('plugin manifest describes the idle timing plugin', () => {
   assert.notEqual(manifest.version, '');
 });
 
-test('hook config registers UserPromptSubmit and Stop handlers', () => {
+test('hook config registers UserPromptSubmit, Stop, and PreCompact handlers', () => {
   const hooksPath = path.join(rootDir, 'hooks', 'hooks.json');
   const userPromptScriptPath = path.join(rootDir, 'scripts', 'user-prompt-submit.js');
   const stopScriptPath = path.join(rootDir, 'scripts', 'stop.js');
+  const preCompactScriptPath = path.join(rootDir, 'scripts', 'pre-compact.js');
 
   assert.ok(fs.existsSync(hooksPath), 'expected hook config to exist');
   assert.ok(fs.existsSync(userPromptScriptPath), 'expected UserPromptSubmit hook script to exist');
   assert.ok(fs.existsSync(stopScriptPath), 'expected Stop hook script to exist');
+  assert.ok(fs.existsSync(preCompactScriptPath), 'expected PreCompact hook script to exist');
 
   const config = JSON.parse(fs.readFileSync(hooksPath, 'utf8'));
   const userPromptHook = config.hooks.UserPromptSubmit[0].hooks[0];
   const stopHook = config.hooks.Stop[0].hooks[0];
+  const preCompactHook = config.hooks.PreCompact[0].hooks[0];
 
   assert.equal(userPromptHook.type, 'command');
   assert.equal(stopHook.type, 'command');
+  assert.equal(preCompactHook.type, 'command');
 
   assert.equal(
     userPromptHook.command,
     'node ${CLAUDE_PLUGIN_ROOT}/scripts/user-prompt-submit.js'
   );
   assert.equal(stopHook.command, 'node ${CLAUDE_PLUGIN_ROOT}/scripts/stop.js');
+  assert.equal(
+    preCompactHook.command,
+    'node ${CLAUDE_PLUGIN_ROOT}/scripts/pre-compact.js'
+  );
 });
 
 test('repo can act as a local marketplace for installing this plugin', () => {
