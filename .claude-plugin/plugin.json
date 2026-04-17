@@ -1,6 +1,6 @@
 {
   "name": "idle-timing",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "Inject hidden timing context and visible idle gap notes into Claude Code prompts.",
   "author": {
     "name": "clankercode",
