@@ -25,6 +25,42 @@ On a fresh session, unavailable prior-turn fields are omitted.
 /plugin install idle-timing@idle-info
 ```
 
+## Statusline integration (optional)
+
+This plugin ships a composable fragment that prints the elapsed time since the model's last reply. It is meant to be dropped into your existing statusline script, not to replace one.
+
+Run the slash command for a guided paste-ready snippet tailored to your current statusline:
+
+```text
+/idle-time-setup
+```
+
+At a minimum you will need to:
+
+1. Enable periodic refresh in `~/.claude/settings.json`:
+
+    ```json
+    { "statusLine": { "refreshInterval": 1 } }
+    ```
+
+2. In your statusline script, after you read stdin into a variable (e.g. `input=$(cat)`), call the fragment and append its output:
+
+    ```bash
+    session_id=$(echo "$input" | jq -r '.session_id // empty')
+    if [ -n "$session_id" ]; then
+      idle=$(node "/path/to/idle-timing/scripts/statusline-fragment.js" \
+        --session-id "$session_id" 2>/dev/null || true)
+      [ -n "$idle" ] && parts+=("$idle")
+    fi
+    ```
+
+The fragment prints just the elapsed time (e.g. `45s`, `3m 21s`, `17m`). Add any prefix or emoji in your own script.
+
+Flags:
+
+- `--session-id <id>` — explicit session id; overrides stdin.
+- `--drop-seconds-after <seconds>` — switch to minute-only formatting at this threshold (default `900`, i.e. 15 minutes).
+
 ## Local Usage
 
 Run Claude Code with the plugin from this repo root:
