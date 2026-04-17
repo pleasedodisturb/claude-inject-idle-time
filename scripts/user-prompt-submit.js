@@ -29,7 +29,7 @@ async function main() {
     throw new Error('session_id is required');
   }
 
-  const userMessageUtc = getNowIso();
+  const userMessageTime = getNowIso();
   const session = await loadSessionState({ dataDir, sessionId });
 
   await saveSessionState({
@@ -37,15 +37,15 @@ async function main() {
     sessionId,
     state: {
       ...session,
-      lastUserPromptAt: userMessageUtc,
+      lastUserPromptAt: userMessageTime,
       lastStopAt: null
     }
   });
 
-  const idleSinceLastStopMs = diffMs(userMessageUtc, session.lastStopAt);
+  const idleSinceLastStopMs = diffMs(userMessageTime, session.lastStopAt);
   const additionalContext = formatTimingBlock({
-    userMessageUtc,
-    idleSinceLastAssistantMs: diffMs(userMessageUtc, session.lastAssistantMessageAt),
+    userMessageTime,
+    idleSinceLastAssistantMs: diffMs(userMessageTime, session.lastAssistantMessageAt),
     idleSinceLastStopMs,
     lastTurnExecMs: session.lastTurnExecMs
   });
