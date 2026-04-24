@@ -99,6 +99,19 @@ test('statusline fragment script exists and is directly invocable', () => {
   assert.match(source, /formatElapsed/);
 });
 
+test('/timestamps slash command is registered', () => {
+  const commandPath = path.join(rootDir, 'commands', 'timestamps.md');
+  assert.ok(fs.existsSync(commandPath), 'expected slash command to exist');
+
+  const contents = fs.readFileSync(commandPath, 'utf8');
+  assert.match(contents, /^---/, 'expected frontmatter');
+  assert.match(contents, /description:/);
+  assert.match(contents, /parse-transcript\.py/);
+
+  const scriptPath = path.join(rootDir, 'scripts', 'parse-transcript.py');
+  assert.ok(fs.existsSync(scriptPath), 'expected parser script to exist');
+});
+
 test('/idle-time-setup slash command is registered', () => {
   const commandPath = path.join(rootDir, 'commands', 'idle-time-setup.md');
   assert.ok(fs.existsSync(commandPath), 'expected slash command to exist');
