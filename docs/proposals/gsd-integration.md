@@ -16,7 +16,12 @@ projects:
 - [`clankercode/claude-inject-idle-time`](https://github.com/clankercode/claude-inject-idle-time) — passive injection via hooks
 - [`s-a-s-k-i-a/claude-code-timestamps`](https://github.com/s-a-s-k-i-a/claude-code-timestamps) (MIT) — retrospective transcript parsing
 
-…and exposes time to the model three ways:
+The active and retrospective modes were added in
+[clankercode/claude-inject-idle-time#1](https://github.com/clankercode/claude-inject-idle-time/pull/1),
+which brings in the MCP time tools and the `/timestamps` slash command on top
+of the original passive hook.
+
+It exposes time to the model three ways:
 
 - **Passive** — hidden `[timing]` block (`time`, `idle_for`, `last_turn`) on every prompt via `UserPromptSubmit`. ~42 tokens/turn.
 - **Active** — MCP server: `get_time`, `time_diff`, `mark_event`, `get_timeline`.
@@ -65,9 +70,24 @@ messages.
 - **Subagent session model.** Without option (4), spawned execution agents see no idle history — acceptable for v1?
 - **`gsd-prompt-guard` interaction.** `[timing]…[/timing]` envelope is structured/predictable; should be safelisted as trusted metadata. MCP tools fall under normal tool-use guardrails.
 
+## Related prior work in this repo
+
+This proposal is adjacent to several existing threads, but doesn't duplicate
+them — they cover continuity and handoff *state*; this one is about temporal
+*signal*. Worth reading together:
+
+- Discussion [#2178](https://github.com/gsd-build/get-shit-done/discussions/2178) — *How to best resume work after token exhaustion.* Resumption is harder when the model has no idea how long the gap was; integration option (3) below directly feeds that.
+- Discussion [#1961](https://github.com/gsd-build/get-shit-done/discussions/1961) — *Resumable research with checkpointing.* Pairs naturally with `mark_event` / `get_timeline` for checkpoint annotation.
+- Discussion [#535](https://github.com/gsd-build/get-shit-done/discussions/535) — *Coming back after a milestone is done.* Same gap on a longer time horizon.
+- Issue [#2473](https://github.com/gsd-build/get-shit-done/issues/2473) — *`/gsd-ship` should refuse to open a PR when HANDOFF.json declares in-progress work.* Reinforces HANDOFF.json as a load-bearing surface; option (3) extends it with temporal fields.
+- Issue [#2006](https://github.com/gsd-build/get-shit-done/issues/2006) — *Planner agent loses critical detail at handoff boundaries.* Different lossage (semantic, not temporal), but the proposed timing fields are cheap context to carry across the same boundary.
+
+Not a duplicate of: [#2410](https://github.com/gsd-build/get-shit-done/issues/2410) (`Stream idle timeout` is a Claude Code stream-level timeout, unrelated to model-side idle awareness — keyword overlap only).
+
 ## Links
 
 - Combined plugin: <https://github.com/pleasedodisturb/claude-inject-idle-time>
-- Sources: [clankercode/claude-inject-idle-time](https://github.com/clankercode/claude-inject-idle-time), [s-a-s-k-i-a/claude-code-timestamps](https://github.com/s-a-s-k-i-a/claude-code-timestamps)
+- Code proposal (active + retrospective modes): [clankercode/claude-inject-idle-time#1](https://github.com/clankercode/claude-inject-idle-time/pull/1)
+- Original sources: [clankercode/claude-inject-idle-time](https://github.com/clankercode/claude-inject-idle-time), [s-a-s-k-i-a/claude-code-timestamps](https://github.com/s-a-s-k-i-a/claude-code-timestamps)
 - GSD: <https://github.com/gsd-build/get-shit-done>
-- Upstream issues: [anthropics/claude-code#44763](https://github.com/anthropics/claude-code/issues/44763), [#47160](https://github.com/anthropics/claude-code/issues/47160)
+- Upstream Anthropic issues: [anthropics/claude-code#44763](https://github.com/anthropics/claude-code/issues/44763), [#47160](https://github.com/anthropics/claude-code/issues/47160)
