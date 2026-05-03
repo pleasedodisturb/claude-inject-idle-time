@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-05-03
+
+### Fixed
+- Hooks no longer block the user's prompt on internal failure. `UserPromptSubmit`, `Stop`, `PreCompact`, and `PostToolUse` now exit 0 (fail-soft) on missing env vars, malformed stdin, disk errors, etc. — they still log to stderr for diagnosis but never propagate failure to Claude Code.
+- `loadSessionState` recovers from a corrupt state file (truncated/malformed JSON). The bad file is renamed to `.json.corrupt` for forensics and a fresh state is returned, so a single mid-write crash no longer breaks every subsequent prompt forever.
+- `formatTimingBlock` no longer accepts a dead `idleSinceLastAssistantMs` argument from `user-prompt-submit.js`. The field was passed but never used; cleanup only.
+
 ## [0.3.0] - 2026-04-17
 
 ### Changed

@@ -45,7 +45,6 @@ async function main() {
   const idleSinceLastStopMs = diffMs(userMessageTime, session.lastStopAt);
   const additionalContext = formatTimingBlock({
     userMessageTime,
-    idleSinceLastAssistantMs: diffMs(userMessageTime, session.lastAssistantMessageAt),
     idleSinceLastStopMs,
     lastTurnExecMs: session.lastTurnExecMs
   });
@@ -66,5 +65,5 @@ async function main() {
 
 main().catch((error) => {
   process.stderr.write(`${error && error.stack ? error.stack : error.message}\n`);
-  process.exit(1);
+  process.exit(0);
 });

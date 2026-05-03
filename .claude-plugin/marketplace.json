@@ -12,7 +12,7 @@
     {
       "name": "idle-timing",
       "source": "./",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "description": "Inject hidden timing context and visible idle gap notes into Claude Code prompts.",
       "homepage": "https://github.com/clankercode/claude-inject-idle-time",
       "repository": "https://github.com/clankercode/claude-inject-idle-time",

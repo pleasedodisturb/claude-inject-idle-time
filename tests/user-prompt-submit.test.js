@@ -164,7 +164,7 @@ test('idle gaps over one minute are shown to the user without adding the note to
   });
 });
 
-test('missing session_id fails before any state access', async () => {
+test('missing session_id exits 0 fail-soft with stderr and no state access', async () => {
   const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'idle-timing-user-prompt-'));
 
   const result = await runUserPromptSubmit({
@@ -173,7 +173,7 @@ test('missing session_id fails before any state access', async () => {
     nowIso: '2026-04-13T05:00:10.000+10:00'
   });
 
-  assert.equal(result.code, 1);
+  assert.equal(result.code, 0);
   assert.equal(result.stdout, '');
   assert.match(result.stderr, /session_id is required/);
   assert.equal(fs.existsSync(path.join(dataDir, 'sessions')), false);

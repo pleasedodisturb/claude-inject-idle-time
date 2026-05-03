@@ -10,11 +10,29 @@ function getSessionFilePath(dataDir, sessionId) {
 }
 
 async function loadSessionState({ dataDir, sessionId }) {
+  const filePath = getSessionFilePath(dataDir, sessionId);
+
+  let raw;
+
   try {
-    const raw = await fs.readFile(getSessionFilePath(dataDir, sessionId), 'utf8');
-    return JSON.parse(raw);
+    raw = await fs.readFile(filePath, 'utf8');
   } catch (error) {
     if (error && error.code === 'ENOENT') {
+      return { sessionId };
+    }
+
+    throw error;
+  }
+
+  try {
+    return JSON.parse(raw);
+  } catch (error) {
+    if (error instanceof SyntaxError) {
+      try {
+        await fs.rename(filePath, `${filePath}.corrupt`);
+      } catch (renameError) {
+        // best-effort: ignore failure to quarantine the corrupt file
+      }
       return { sessionId };
     }
 

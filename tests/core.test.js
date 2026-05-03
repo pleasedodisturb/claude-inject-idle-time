@@ -152,3 +152,17 @@ test('saveSessionState persists a session record that can be loaded again', asyn
   const sessionDirEntries = fs.readdirSync(path.join(dataDir, 'sessions'));
   assert.deepEqual(sessionDirEntries, ['session-1.json']);
 });
+
+test('loadSessionState recovers from a corrupt JSON file by quarantining it and returning fresh state', async () => {
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'idle-timing-core-'));
+  const filePath = getSessionFilePath(dataDir, 'session-1');
+
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+  fs.writeFileSync(filePath, '{"sessionId": "session-1", "lastStopAt": "2026-04-12');
+
+  const state = await loadSessionState({ dataDir, sessionId: 'session-1' });
+
+  assert.deepEqual(state, { sessionId: 'session-1' });
+  assert.equal(fs.existsSync(filePath), false);
+  assert.equal(fs.existsSync(`${filePath}.corrupt`), true);
+});

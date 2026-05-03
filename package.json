@@ -1,7 +1,7 @@
 {
   "name": "claude-code-idle-timing-plugin",
   "private": true,
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Claude Code plugin that injects per-message timing context.",
   "scripts": {
     "test": "node --test tests/*.test.js",

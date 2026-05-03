@@ -162,7 +162,7 @@ test('repeat stop for the same turn preserves the existing execution duration', 
   });
 });
 
-test('missing or falsy session_id fails with stderr and exit code 1', async () => {
+test('missing or falsy session_id exits 0 fail-soft with stderr', async () => {
   const cases = [{}, { session_id: '' }, { session_id: null }];
 
   for (const input of cases) {
@@ -173,20 +173,20 @@ test('missing or falsy session_id fails with stderr and exit code 1', async () =
       nowIso: '2026-04-12T19:10:00.000Z'
     });
 
-    assert.equal(result.code, 1);
+    assert.equal(result.code, 0);
     assert.equal(result.stdout, '');
     assert.match(result.stderr, /session_id is required/);
     assert.equal(fs.existsSync(path.join(dataDir, 'sessions')), false);
   }
 });
 
-test('missing CLAUDE_PLUGIN_DATA fails with stderr and exit code 1', async () => {
+test('missing CLAUDE_PLUGIN_DATA exits 0 fail-soft with stderr', async () => {
   const result = await runStop({
     input: { session_id: 'session-1' },
     nowIso: '2026-04-12T19:10:00.000Z'
   });
 
-  assert.equal(result.code, 1);
+  assert.equal(result.code, 0);
   assert.equal(result.stdout, '');
   assert.match(result.stderr, /CLAUDE_PLUGIN_DATA is required/);
 });

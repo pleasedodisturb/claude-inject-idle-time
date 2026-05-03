@@ -51,5 +51,5 @@ async function main() {
 
 main().catch((error) => {
   process.stderr.write(`${error && error.stack ? error.stack : error.message}\n`);
-  process.exit(1);
+  process.exit(0);
 });

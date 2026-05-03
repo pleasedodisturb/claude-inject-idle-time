@@ -99,7 +99,7 @@ test('pre-compact creates session state when none exists', async () => {
   });
 });
 
-test('pre-compact fails when session_id is missing', async () => {
+test('pre-compact exits 0 fail-soft when session_id is missing', async () => {
   const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'idle-timing-precompact-'));
 
   const result = await runPreCompact({
@@ -108,16 +108,16 @@ test('pre-compact fails when session_id is missing', async () => {
     nowIso: '2026-04-17T12:00:00.000Z'
   });
 
-  assert.equal(result.code, 1);
+  assert.equal(result.code, 0);
   assert.match(result.stderr, /session_id is required/);
 });
 
-test('pre-compact fails when CLAUDE_PLUGIN_DATA is not set', async () => {
+test('pre-compact exits 0 fail-soft when CLAUDE_PLUGIN_DATA is not set', async () => {
   const result = await runPreCompact({
     input: { session_id: 'session-1' },
     nowIso: '2026-04-17T12:00:00.000Z'
   });
 
-  assert.equal(result.code, 1);
+  assert.equal(result.code, 0);
   assert.match(result.stderr, /CLAUDE_PLUGIN_DATA is required/);
 });
